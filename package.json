@@ -1,5 +1,33 @@
 {
   "dependencies": {
     "git": "^0.1.5"
-  }
+  },
+  "name": "genius",
+  "version": "1.0.0",
+  "description": "Best solution to create a account in Instagram",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/bidwolf/GenIUS.git"
+  },
+  "keywords": [
+    "Bot",
+    "Instagram",
+    "Instagram",
+    "Bot",
+    "create",
+    "account",
+    "Instagram",
+    "account"
+  ],
+  "author": "Henrique de Paula Rodrigues",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bidwolf/GenIUS/issues"
+  },
+  "homepage": "https://github.com/bidwolf/GenIUS#readme"
 }
