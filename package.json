@@ -1,12 +1,14 @@
 {
     "dependencies": {
-        "git": "^0.1.5"
+        "express": "^4.17.2",
+        "git": "^0.1.5",
+        "i": "^0.3.7",
+        "puppeteer": "^13.3.2"
     },
     "name": "genius",
     "version": "1.0.0",
     "description": "Best solution to create a account in Instagram",
     "main": "index.js",
-    "devDependencies": {},
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
