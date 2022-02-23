@@ -2,7 +2,6 @@
 const puppeteer = require('puppeteer');
 const generator = require('./generator');
 const config = require('./config.json');
-const { response } = require('express');
 
 function delay(n) {
     return new Promise(function(resolve) {
@@ -10,56 +9,69 @@ function delay(n) {
     });
 }
 (async() => {
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    const emailOrPhone = config.email;
-    const fullname = generator.generateFullName();
-    const password = config.password;
-    const username = generator.generateUserName(fullname);
     async function verify(inputIndex) {
-        if ((((await page.$$('span.coreSpriteInputError.gBp1f')).length == 0))) return false;
-        else {
-            let qtdError = (await page.$$('span.coreSpriteInputError.gBp1f')).length;
-            return qtdError;
-
-        }
-    }
-    async function verifier(inputIndex) {
-        let numberOfErrors = await verify(inputIndex);
-        console.log(numberOfErrors);
-        if (numberOfErrors === false) {
-            console.log("NOTHING WAS WRONG");
-            return false();
+        if ((await page.$$("span.coreSpriteInputError.gBp1f")) == []) {
+            return false;
+        } else if (await (await page.$$("span.coreSpriteInputAccepted")).length > 2) {
+            return false;
         } else {
-            console.log(page.$$('span.coreSpriteInputError.gBp1f')[0]);
+            console.log((await page.$$("span.coreSpriteInputError.gBp1f")).length);
+            const result = await page.evaluate(() => {
+                const inputNode = Array.from(document.querySelectorAll('input')).map((inputNode) => {
+                    return inputNode.parentNode.parentNode; //Pega o nodelist referente ao input observado e captura o elemento pai de seu elemento pai no DOM
+                });
+                const result = [];
+                for (let i = 0; i < inputNode.length - 1; i++) {
 
+                    result[i] = Array.from(Array.from(inputNode[i].childNodes)[1].childNodes)[0].className; // Pega o atributo filho que se refere ao Sprite que referencia se ha ou nao um erro na entrada inserida
+                }
+                return result;
+            });
+            return (result[inputIndex] == 'coreSpriteInputError gBp1f'); //retorna true para erro de entrada e false para entrada aceita
 
         }
 
     }
+    async function insertInput(input, content) {
 
-    async function preencherCampo(campo, conteudo, inputIndex) {
-
-        campo = "[name=\"" + campo + "\"]";
-        await page.type(campo, conteudo);
-        //console.log(page.$$('input')[inputIndex].parentNode.parentNode == page.$$('span.coreSpriteInputError.gBp1f')[0].parentNode);
-
+        input = "[name=\"" + input + "\"]";
+        await page.type(input, content);
         await delay(4);
     }
-    async function AcessarInstagram() {
+    async function signupInstagram() {
         await page.goto('https://instagram.com/');
         await delay(2);
         await page.click('[href="/accounts/emailsignup/"]');
         await delay(4);
     }
+    async function stateInputRefresh() {
+        let status = await verify(2);
+        console.log("EM state input refresh " + status);
+        if (status) {
+            await (await page.$('span.coreSpriteInputRefresh.Szr5J')).click();
+            await delay(2);
+            await (await page.$('input')).click();
+            stateInputRefresh();
+        } else return;
+    }
+    async function createAccount() {
 
-    await AcessarInstagram();
-    await preencherCampo("emailOrPhone", emailOrPhone, 0);
-    await preencherCampo("fullName", fullname, 1);
-    console.log(await verify(1));
-    await preencherCampo("username", username, 2);
+        await signupInstagram();
+        await insertInput("emailOrPhone", emailOrPhone);
+        await insertInput("fullName", fullName);
+        await insertInput("username", username);
+        await insertInput("password", password);
+        await stateInputRefresh();
+
+    }
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    const emailOrPhone = config.email;
+    const fullName = generator.generateFullName();
+    const password = config.password;
+    const username = generator.generateUserName(fullName);
+    await createAccount();
+    await delay(2);
     console.log(await verify(2));
-    await preencherCampo("password", password, 3);
-    console.log(await verify(3));
 
 })();
