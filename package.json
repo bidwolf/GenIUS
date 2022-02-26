@@ -1,17 +1,16 @@
 {
     "dependencies": {
-        "dotenv": "^16.0.0",
         "express": "^4.17.2",
-        "git": "^0.1.5",
-        "nodemon": "^2.0.15",
-        "puppeteer": "^13.3.2"
+        "git": "^0.1.5"
     },
     "name": "genius",
     "version": "1.0.0",
     "description": "Best solution to create a account in Instagram",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "dev": "nodemon GenIus/index.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon GenIus/index.js"
     },
     "repository": {
         "type": "git",
@@ -32,5 +31,11 @@
     "bugs": {
         "url": "https://github.com/bidwolf/GenIUS/issues"
     },
-    "homepage": "https://github.com/bidwolf/GenIUS#readme"
+    "homepage": "https://github.com/bidwolf/GenIUS#readme",
+    "devDependencies": {
+        "dotenv": "^16.0.0",
+        "jest": "^27.5.1",
+        "nodemon": "^2.0.15",
+        "puppeteer": "^13.4.0"
+    }
 }

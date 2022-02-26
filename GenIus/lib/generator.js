@@ -43,7 +43,15 @@ function generateUserName(name) {
 
     return name;
 }
+
+function generateRandomBirthday() {
+    let day = generateRandom(30) + 1;
+    let mounth = generateRandom(11) + 1;
+    let year = generateRandom(20) + 1980;
+    return day + '/' + mounth + '/' + year;
+}
 console.log(generateUserName(generateFullName()));
+console.log(generateRandomBirthday());
 module.exports = {
     generateFullName,
     generateUserName

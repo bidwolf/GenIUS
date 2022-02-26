@@ -1,7 +1,7 @@
 //Adicionando a biblioteca puppeteer ao projeto
 const puppeteer = require('puppeteer');
-const generator = require('./generator');
-const config = require('./config.json');
+const generator = require('./lib/generator');
+require('dotenv').config();
 
 function delay(n) {
     return new Promise(function(resolve) {
@@ -57,18 +57,15 @@ function delay(n) {
     async function createAccount() {
 
         await signupInstagram();
-        await insertInput("emailOrPhone", emailOrPhone);
+        await insertInput("emailOrPhone", process.env.PRIVATE_EMAIL);
         await insertInput("fullName", fullName);
         await insertInput("username", username);
-        await insertInput("password", password);
+        await insertInput("password", process.env.PRIVATE_PASSWORD);
         await stateInputRefresh();
-
     }
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    const emailOrPhone = config.email;
     const fullName = generator.generateFullName();
-    const password = config.password;
     const username = generator.generateUserName(fullName);
     await createAccount();
     await delay(2);
