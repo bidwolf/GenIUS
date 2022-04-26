@@ -1,4 +1,5 @@
 const fs = require('fs');
+const People = require('./people');
 
 function load(contentFilePath) {
     const fileBuffer = fs.readFileSync(contentFilePath, 'utf-8', (err, arq) => { console.log("err"); });
@@ -25,16 +26,17 @@ function generateFullName() {
     const surnames = load('Sobrenomes.txt');
     const qtdSurnames = generateRandom(3) + 1;
     let name = generateAleatoryName(names);
+    let surname = '';
     for (let i = 0; i < qtdSurnames; i++) {
-        name = name + " " + generateAleatoryName(surnames);
+        surname = surname + generateAleatoryName(surnames) + ' ';
     }
-    if (name.length > MAX_Characters) {
-        for (let index = name.length - 1; name[index] != ' '; index--) {
-            name = name.slice(0, index);
-
+    let fullName = name + ' ' + surname;
+    if (fullName.length > MAX_Characters) {
+        for (let index = surname.length - 1; surname[index] != ' '; index--) {
+            surname = surname.slice(0, index);
         }
     }
-    return capitalize(name.toLowerCase());
+    return { name: capitalize(name.toLowerCase()), surname: capitalize(surname.toLowerCase()) };
 }
 
 function generateUserName(name) {
@@ -45,14 +47,21 @@ function generateUserName(name) {
 }
 
 function generateRandomBirthday() {
-    let day = generateRandom(30) + 1;
-    let mounth = generateRandom(11) + 1;
-    let year = generateRandom(20) + 1980;
-    return day + '/' + mounth + '/' + year;
+    let dia = generateRandom(30) + 1;
+    let mes = generateRandom(11) + 1;
+    let ano = generateRandom(20) + 1980;
+    let day = new Date();
+    day.setFullYear(ano, mes, dia);
+    return day;
 }
-console.log(generateUserName(generateFullName()));
-console.log(generateRandomBirthday());
+
+function generatePeople() {
+
+    let fullName = generateFullName();
+    let birthday = generateRandomBirthday();
+    return new People(fullName.name, fullName.surname, birthday);
+
+}
 module.exports = {
-    generateFullName,
-    generateUserName
+    generatePeople
 };
