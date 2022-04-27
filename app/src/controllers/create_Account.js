@@ -104,7 +104,20 @@ async function createGmail(people, page) {
     await insertInput("ConfirmPasswd", process.env.PRIVATE_PASSWORD, page);
 
 }
+async function getEmail(page) {
+    const url = 'https://tempail.com/pt/';
+    await page.waitForNavigation();
+    const email = Array.from(await page.$$('input'))[0].value;
+    return email;
+}
+async function getCode(page) {
+    await page.waitForSelector('a>div.baslik', { timeout: 0, visible: true }).then(() => console.log('código de verificação recebido'));
+    let code = Array.from(await page.$$('a>div.baslik'))[0].innerText.split(' ')[0];
+    return code;
+}
 module.exports = {
     createAccount,
-    createGmail
+    createGmail,
+    getEmail,
+    getCode
 };
