@@ -4,13 +4,13 @@
         "git": "^0.1.5"
     },
     "name": "genius",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "Best solution to create a account in Instagram",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon GenIus/index.js",
+        "dev": "nodemon app/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon GenIus/index.js"
+        "start": "nodemon app/index.js"
     },
     "repository": {
         "type": "git",

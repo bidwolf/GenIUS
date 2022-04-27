@@ -18,6 +18,12 @@ class People {
 
         return userName;
     }
+    get userName2() {
+        let userName = `${this.firstName} ${this.lastName}`;
+        for (let i = 0; i < userName.length; i++) userName = userName.replace(' ', '.');
+
+        return userName;
+    }
 
 }
 module.exports = People;

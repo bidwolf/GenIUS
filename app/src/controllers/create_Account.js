@@ -1,5 +1,3 @@
-const puppeteer = require('puppeteer');
-
 function delay(n) {
     return new Promise(function(resolve) {
         setTimeout(resolve, n * 1000);
@@ -14,7 +12,7 @@ async function verify(inputIndex, page) {
         console.log((await page.$$("span.coreSpriteInputError.gBp1f")).length);
         const result = await page.evaluate(() => {
             const inputNode = Array.from(document.querySelectorAll('input')).map((inputNode) => {
-                return inputNode.parentNode.parentNode; //Pega o nodelist referente ao input observado e captura o elemento pai de seu elemento pai no DOM
+                return inputNode.parentNode.parentNode; //Pega o nodeList referente ao input observado e captura o elemento pai de seu elemento pai no DOM
             });
             const result = [];
             for (let i = 0; i < inputNode.length - 1; i++) {
@@ -34,15 +32,15 @@ async function insertInput(input, content, page) {
     await page.type(input, content);
     await delay(4);
 }
-async function signupInstagram(page) {
-    await page.goto('https://instagram.com/');
+async function signupPage(page, url, selector) {
+    await page.goto(url);
     await delay(2);
-    await page.click('[href="/accounts/emailsignup/"]');
+    await page.click(selector);
     await delay(4);
 }
 async function stateInputRefresh(page) {
     let status = await verify(2, page);
-    console.log("EM state input refresh " + status);
+    console.log("In state input refresh " + status);
     if (status) {
         await (await page.$('span.coreSpriteInputRefresh.Szr5J')).click();
         await delay(2);
@@ -51,8 +49,9 @@ async function stateInputRefresh(page) {
     } else return;
 }
 async function createAccount(people, page) {
-
-    await signupInstagram(page);
+    let url = 'https://instagram.com/';
+    let button = '[href="/accounts/emailsignup/"]';
+    await signupPage(page, url, button);
     await insertInput("emailOrPhone", process.env.PRIVATE_EMAIL, page);
     await insertInput("fullName", people.fullName, page);
     await insertInput("username", people.userName, page);
@@ -93,6 +92,19 @@ async function send(page) {
 
     });
 }
+
+async function createGmail(people, page) {
+    const url = 'https://www.google.com/intl/pt-PT/gmail/about/';
+    const button = '[href="https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&flowName=GlifWebSignIn&flowEntry=SignUp"]';
+    await signupPage(page, url, button);
+    await insertInput("firstName", people.firstName, page);
+    await insertInput("lastName", people.lastName, page);
+    // await insertInput("Username", people.userName2, page);
+    await insertInput("Passwd", process.env.PRIVATE_PASSWORD, page);
+    await insertInput("ConfirmPasswd", process.env.PRIVATE_PASSWORD, page);
+
+}
 module.exports = {
-    createAccount
+    createAccount,
+    createGmail
 };
