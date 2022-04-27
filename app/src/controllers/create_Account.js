@@ -52,7 +52,7 @@ async function createAccount(people, page) {
     let url = 'https://instagram.com/';
     let button = '[href="/accounts/emailsignup/"]';
     await signupPage(page, url, button);
-    await insertInput("emailOrPhone", process.env.PRIVATE_EMAIL, page);
+    await insertInput("emailOrPhone", people.email, page);
     await insertInput("fullName", people.fullName, page);
     await insertInput("username", people.userName, page);
     await insertInput("password", process.env.PRIVATE_PASSWORD, page);
@@ -105,14 +105,15 @@ async function createGmail(people, page) {
 
 }
 async function getEmail(page) {
-    const url = 'https://tempail.com/pt/';
-    await page.waitForNavigation();
-    const email = Array.from(await page.$$('input'))[0].value;
+    const url = 'https://mail.tm/pt/';
+    await page.goto(url);
+    await page.waitForSelector('[class="flex flex-col dark:text-gray-300 text-gray-600 text-sm font-medium leading-6 transition ease-in-out block"]');
+    const email = await page.$$eval('input', (el) => el[0].value);
     return email;
 }
 async function getCode(page) {
-    await page.waitForSelector('a>div.baslik', { timeout: 0, visible: true }).then(() => console.log('código de verificação recebido'));
-    let code = Array.from(await page.$$('a>div.baslik'))[0].innerText.split(' ')[0];
+    await page.waitForSelector('[class="dark:text-gray-300 text-gray-900 text-sm leading-5 truncate"]', { timeout: 0, visible: true }).then(() => console.log('código de verificação recebido'));
+    let code = await page.$$eval('[class="dark:text-gray-300 text-gray-900 text-sm leading-5 truncate"]', el => el[0].innerText.split(' ')[0]);
     return code;
 }
 module.exports = {
